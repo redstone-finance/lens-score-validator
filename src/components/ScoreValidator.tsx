@@ -9,11 +9,25 @@ interface Props {
 
 export const ScoreValidator = ({ signer }: Props) => {
   const [lensHandler, setLensHandler] = useState<string>("");
-  const { checkCreditScore, isLoading, minimalScore, score, isScoreEnough } =
-    useScoreValidator();
+  const {
+    checkScore,
+    isLoading,
+    minimalScore,
+    score,
+    isScoreEnough,
+    errorMessage,
+  } = useScoreValidator();
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (errorMessage) {
+    return (
+      <div className="flex flex-col w-1/2">
+        <p className="mb-4 text-white font-bold text-lg">{errorMessage}</p>
+      </div>
+    );
   }
 
   if (score) {
@@ -46,10 +60,10 @@ export const ScoreValidator = ({ signer }: Props) => {
       <div className="flex justify-center">
         <button
           className="hover:opacity-75 text-white"
-          onClick={() => checkCreditScore(signer, lensHandler)}
+          onClick={() => checkScore(signer, lensHandler)}
           disabled={isLoading}
         >
-          Check credit score
+          Check score
         </button>
       </div>
     </div>

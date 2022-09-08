@@ -9,31 +9,59 @@ export const useScoreValidator = () => {
   const [minimalScore, setMinimalScore] = useState<number | null>(null);
   const [score, setScore] = useState<number | null>(null);
   const [isScoreEnough, setIsScoreEnough] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const checkCreditScore = async (
+  const checkScore = async (
     signer: providers.JsonRpcSigner,
     lensHandler: string
   ) => {
     setIsLoading(true);
+    const wrappedContract = buildWrappedContract(signer, lensHandler);
+    try {
+      const { minimalScore, score, verdict } = await fetchScoreDataFromContract(
+        lensHandler,
+        wrappedContract
+      );
+      setMinimalScore(Number(minimalScore));
+      setScore(Number(utils.formatUnits(score, 8)));
+      setIsScoreEnough(verdict);
+    } catch (error: any) {
+      if (error[0].response.status === 500) {
+        setErrorMessage("Invalid Lens handler");
+      } else {
+        setErrorMessage("Fetching score data from contract failed");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const buildWrappedContract = (
+    signer: providers.JsonRpcSigner,
+    lensHandler: string
+  ) => {
     const contract = new Contract(CONTRACT_ADDRESS, abi, signer);
-    const wrappedContract = WrapperBuilder.wrapLite(contract).usingPriceFeed(
-      "redstone",
-      { asset: lensHandler }
-    );
+    return WrapperBuilder.wrapLite(contract).usingPriceFeed("redstone", {
+      asset: lensHandler,
+    });
+  };
+
+  const fetchScoreDataFromContract = async (
+    lensHandler: string,
+    wrappedContract: Contract
+  ) => {
     const lensHandlerAsBytes = utils.formatBytes32String(lensHandler);
     const [minimalScore, score, verdict] =
       await wrappedContract.checkCreditScore(lensHandlerAsBytes);
-    setMinimalScore(Number(minimalScore));
-    setScore(Number(utils.formatUnits(score, 8)));
-    setIsScoreEnough(verdict);
-    setIsLoading(false);
+    return { minimalScore, score, verdict };
   };
 
   return {
-    checkCreditScore,
+    checkScore,
     isLoading,
     minimalScore,
     score,
     isScoreEnough,
+    errorMessage,
   };
 };
