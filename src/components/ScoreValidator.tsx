@@ -37,7 +37,7 @@ export const ScoreValidator = ({ signer }: Props) => {
         <p className="mb-4 text-white font-bold text-lg">
           {isScoreEnough
             ? "Yay! Your score is high enough"
-            : "We are sorry but your score isn't high enough"}
+            : "Sorry but your score isn't high enough"}
         </p>
         <p className="mb-4 text-white">
           Required score: <span className="font-bold">{minimalScore}</span>
