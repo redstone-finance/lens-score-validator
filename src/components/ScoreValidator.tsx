@@ -2,6 +2,7 @@ import { useState } from "react";
 import { providers } from "ethers";
 import { Loader } from "./Loader";
 import { useScoreValidator } from "../hooks/useScoreValidator";
+import { Layout } from "./Layout";
 
 interface Props {
   signer: providers.JsonRpcSigner;
@@ -24,15 +25,15 @@ export const ScoreValidator = ({ signer }: Props) => {
 
   if (errorMessage) {
     return (
-      <div className="flex flex-col w-1/2">
+      <Layout>
         <p className="mb-4 text-white font-bold text-lg">{errorMessage}</p>
-      </div>
+      </Layout>
     );
   }
 
   if (score) {
     return (
-      <div className="flex flex-col w-1/2">
+      <Layout>
         <p className="mb-4 text-white font-bold text-lg">
           {isScoreEnough
             ? "Yay! Your score is high enough"
@@ -44,7 +45,7 @@ export const ScoreValidator = ({ signer }: Props) => {
         <p className="mb-4 text-white">
           Your score: <span className="font-bold">{score}</span>
         </p>
-      </div>
+      </Layout>
     );
   }
 

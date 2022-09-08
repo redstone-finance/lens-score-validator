@@ -26,7 +26,7 @@ export const useScoreValidator = () => {
       setScore(Number(utils.formatUnits(score, 8)));
       setIsScoreEnough(verdict);
     } catch (error: any) {
-      if (error[0].response.status === 500) {
+      if (error[0]?.response?.status === 500) {
         setErrorMessage("Invalid Lens handler");
       } else {
         setErrorMessage("Fetching score data from contract failed");

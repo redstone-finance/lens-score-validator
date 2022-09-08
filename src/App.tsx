@@ -8,18 +8,20 @@ export const App = () => {
   const isGoerliNetwork = network?.name === "goerli";
 
   return (
-    <div className="flex justify-center items-center w-screen h-screen bg-slate-800">
-      {signer ? (
-        isGoerliNetwork ? (
-          <ScoreValidator signer={signer} />
+    <div>
+      <div className="flex justify-center items-center w-screen h-screen bg-slate-800">
+        {signer ? (
+          isGoerliNetwork ? (
+            <ScoreValidator signer={signer} />
+          ) : (
+            <p className="text-white font-bold text-lg">
+              Please connect to Goerli network
+            </p>
+          )
         ) : (
-          <p className="text-white font-bold text-lg">
-            Please connect to Goerli network
-          </p>
-        )
-      ) : (
-        <ConnectButton connectWallet={connectWallet} />
-      )}
+          <ConnectButton connectWallet={connectWallet} />
+        )}
+      </div>
     </div>
   );
 };
